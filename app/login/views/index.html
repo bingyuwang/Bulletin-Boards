@@ -1,0 +1,27 @@
+
+<div class="list" ng-controller="loginUserController">
+  <form  ng-submit="loginUser()">
+  <label class="item item-input item-floating-label">
+    <span class="input-label">User Name</span>
+    <input type="text" name="Username" ng-model="user.Username" placeholder="User Name">
+  </label>
+  <label class="item item-input item-floating-label">
+    <span class="input-label">Password</span>
+    <input type="text" name="Password" ng-model="user.Password" placeholder="Password">
+  </label>
+      
+
+    <div class="padding">
+        <input type="submit" class="button button-block button-positive" onclick="loginUser()" value="Login" />
+        <button  class="button button-block button-light" onclick="window.location.href='newUser.html'" >Register</button>
+        <button  class="button button-block button-light" onclick=" supersonic.ui.initialView.dismiss()" >Continue</button>
+    </div>
+
+  </form>
+<!--  <p>form = {{user}}</p>-->
+
+
+
+</div>
+
+

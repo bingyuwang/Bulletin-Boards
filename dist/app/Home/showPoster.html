@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+  window.addEventListener('WebComponentsReady', function() {
+    supersonic.app.splashscreen.hide();
+  });
+  </script>
+  <!-- Cloud resource definition file for Supersonic Data -->
+  <script src="/cloud-resources.js"></script>
+  <meta charset="utf8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  <title>showPoster</title>
+
+  <link rel="stylesheet" href="/components/supersonic/css/supersonic.css" />
+  <link rel="stylesheet" href="/app/common/stylesheets/application.css" />
+  <link rel="import" href="/components/supersonic/components/import.html">
+
+  <script src="http://localhost/cordova.js"></script>
+  <script src="/components/steroids-js/steroids.js"></script>
+  <script src="/components/angular/angular.js"></script>
+  <script src="/components/supersonic/supersonic.js"></script>
+  <script src="/components/webcomponentsjs/webcomponents.js"></script>
+
+  
+  <script src="/app/common.js"></script>
+  
+  <script src="/app/Home.js"></script>
+  
+      <script src="//www.parsecdn.com/js/parse-1.4.0.min.js"></script>
+       <script type="text/javascript">
+
+  Parse.initialize("susDpNWLgi3QqeprNxBKeQ7uIJK0srYlde52neVb", "OMWpK5Oa17fiNcDyTkqvbKz2HHL6szH4jPYXlhz0");
+</script>
+</head>
+<body ng-app="Home">
+
+<div ng-controller="IndexController">
+
+  <div class="padding">
+    <a class="button icon-left super-chevron-left button-clear button-dark" onclick="window.location.href='index.html'">Back</a>
+  </div>
+
+
+  <div class="list card" ng-repeat="poster in posters" ng-controller="IndexController">
+
+      <div class="item item-avatar">
+        <img src="/imags/NUwildcats.png">
+        <h2>{{ poster.study }}</h2>
+        <p>{{ poster.lab }}</p>
+        <p>{{ poster.duration }}, {{ poster.compensation }}, {{ poster.location }} </p>
+      </div>
+
+      <div class="item item-body">
+        <img target="_self" class="full-image" ng-src="{{poster.cover}}" >
+
+        <p>
+          <a href="#" class="subdued">1 Like</a>
+          <a href="#" class="subdued">5 Comments</a>
+          <i class = "icon super-email" style="font-size: 25px; float: right" onclick="sendEmail()" ></i>
+
+        </p>
+      </div>
+    </div>
+
+    <script >
+    function sendEmail()
+    {
+      var EMAIL_ADDRESS = "";
+      window.open("mailto:" + EMAIL_ADDRESS);
+    }
+    </script>
+
+</div>
+
+    <style>
+        .container
+        {
+            width:100%;
+        }
+        #M-button
+        {
+            width:50%;
+            display: inline !important;
+        }
+        #R-button
+        {
+            width:50%;
+            display: inline !important;
+        }
+    </style>
+
+
+
+
+
+
+<!--
+  <div ng-repeat="poster in posters" >
+    <div class="item item-body">
+      <img class="full-image" ng-src="{{poster.cover}}" >
+    </div>
+  </div>
+-->
+
+
+</body>
+</html>
