@@ -38,7 +38,7 @@
 
 
 <div class="list" ng-controller="loginUserController">
-  <form  ng-submit="loginUser()">
+  <form  >
   <label class="item item-input item-floating-label">
     <span class="input-label">User Name</span>
     <input type="text" name="Username" ng-model="user.Username" placeholder="User Name">
@@ -47,16 +47,24 @@
     <span class="input-label">Password</span>
     <input type="text" name="Password" ng-model="user.Password" placeholder="Password">
   </label>
+    <label class="item item-input item-floating-label">
+    <span class="input-label">Email</span>
+    <input type="text" name="Email" ng-model="user.Email" placeholder="Email">
+  </label>
       
 
     <div class="padding">
-        <input type="submit" class="button button-block button-positive" onclick="loginUser()" value="Login" />
-        <button  class="button button-block button-light" onclick="window.location.href='newUser.html'" >Register</button>
-        <button  class="button button-block button-light" onclick=" supersonic.ui.initialView.dismiss()" >Continue</button>
+<!--         <input type="submit" class="button button-block button-positive" ng-click="loginUser()"/>
+        <button  class="button button-block button-positive" onclick="window.location.href='newUser.html'" >Register</button> -->
+
+        
+        <button  class="button button-block button-positive" ng-click="loginUser()">Login</button>
+        <button   class="button button-block button-positive" ng-click="addUser()">Register</button>
+        <button  class="button button-block button-light" onclick=" supersonic.ui.initialView.dismiss()" >View as a guest</button>
     </div>
 
   </form>
-<!--  <p>form = {{user}}</p>-->
+<!--   <p>form = {{user}}</p> -->
 
 
 

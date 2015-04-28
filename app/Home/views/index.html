@@ -1,94 +1,257 @@
 <html>
+
+<!--includes-->
 <script type="text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 <script type="text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
+<body>
   <div ng-controller="IndexController">
 
     <div class="list">
-    <label class="item item-input item-select">
-        <img src="/imags/NUwildcats.png" onclick="location.reload()" width="50px"; height="40px"> <!-- Add the refresh function when click the WildCat-->
-        <div style="margin-left:20px; color:#9933ff; font-weight:bold; font-size:120%">
+      <!--<label class="item item-input">-->
+          <img src="/imags/NUwildcats.png" width="50px"; height="40px" style="float:left" onclick = "location.reload()">
+          <div style="margin-left:50px; margin-top:10px; color:#9933ff; font-weight:bold; font-size:150%;">
           NU Bulletin Board
+          </div>
+      <!--</label>-->
+    </div>
+    <div class="list">
+      <label class="item item-input item-select">
+        <div class="input-label">
+        Sort By:
         </div>
-      <select>
-        <option>Research</option>
-        <option selected>Music</option>
-      </select>
-    </label>
-  </div>
+        <select id="sortSelect" onchange="sortEvents();" autocomplete="off">
+          <option value="createdAt" selected>Most Recent</option>
+          <option value="COMP-HTL">Compensation (High to Low)</option>
+          <option value="COMP-LTH">Compensation (Low to High)</option>
+          <option value="DUR-STL">Duration (Short to Long)</option>
+          <option value="DUR-LTS">Duration (Long to Short)</option>
+          <!--<option value="rating">Rating</option>-->
+        </select>
+      </label>
+    </div>
   </div>
 
-    <div id = "events"></div>
+<div id = "events"></div>
+
+</body>
 
   <script type = "foo/bar" id = "eventTemplate">
 
-    <div class="list" ng-controller="IndexController">
-          <a class="item item-thumbnail-left" href="#">
-          <img src = "<%=posterIcon._url%>" height = "80" width="80" style="top: 40px"></img>
+  <ul class="list" ng-hide="events.length == 0">
+
+     <div class="list" ng-controller="IndexController">
+     <!--
+        <a class="item item-thumbnail-left" href="#">
+          <img src = "<%=posterIcon._url%>" height = "80" width="80" </img>
           <h2><%=study%></h2>
           <p><%="$" + compensation%>, <%=duration%></p>
           <p><%=location%></p>
           <p><%="Start date: " +startdate_str%></p>
           <p><%="End date: " + enddate_str%></p>
+          <p><%=likeNum + " Likes"%> <%=dislikeNum + " Dislikes"%></p>
+          <p><%=email%></p>
           <p>
-          <i class = "icon super-heart-broken" style="font-size: 25px; float: right; padding-right: 10px" onclick="addDislikeNum('<%=testId%>')"></i>
-          <i class = "icon super-heart" style="font-size: 25px; float: right; padding-right: 20px" onclick="addLikeNum('<%=testId%>')"></i>
-          <i class = "icon super-email" style="font-size: 25px; float: right; padding-right: 20px" onclick="sendEmail()"></i>
-          <%=likeNum + " Like"%> <%=dislikeNum + " Dislike"%>
+              <span type = "button" id = "envelope" class = "icon super-email" style="font-size: 25px; float: right; padding: 10px" onclick = "test()"></span>
           </p>
         </a>
+-->
+      <div>
+        <li>
+          <div class="item">
+            <super-navigate location="studyInfo#studyInfo?objectId=<%=testId%>" data-params-id='<%=testId%>'>
+              <div class="item-thumbnail-left">
+              <img style= "position:absolute; top:35px;  border-width: 4px" height:80px; width: 80px; src = "<%=posterIcon._url%>" </img>
+                <div style="width:180px;word-break:break-word;">
+                <h2 style="position:relative; right:20px;"><%=study%></h2>
+                <p style= "position:relative; right:20px;"><span><%="$" + compensation%>, <%=duration%></span></p>
+                <p style= "position:relative; right:20px;"><span><%=startdate_str%><%=" ~ " +enddate_str%></span></p>
+                <p style= "position:relative; right:20px;"><span><%=location%></span></p>
+                <p style= "position:relative; right:20px;"><span><%=likeNum + " Like"%> <%=dislikeNum + " Dislike"%></span></p>
+                </div>
+              </div>
+            <i class = "icon super-heart-broken" style="font-size: 25px; float: right; padding-right: 10px" onclick="addDislikeNum('<%=testId%>')"></i>
+            <i class = "icon super-heart" style="font-size: 25px; float: right; padding-right: 20px" onclick="addLikeNum('<%=testId%>')"></i>
+            <i class = "icon super-email" style="font-size: 25px; float: right; padding-right: 20px" onclick="sendEmail('<%=study%>', '<%=location%>', '<%=startdate_str%>', '<%=enddate_str%>')"></i>
+          </div>
+        </li>
+      </div>
 
-    </div>
+
+    </ul>
 
   </script>
 
-
-
-
-
   <script type="text/javascript">
+    //Initialize/test Parse
     Parse.initialize("susDpNWLgi3QqeprNxBKeQ7uIJK0srYlde52neVb", "OMWpK5Oa17fiNcDyTkqvbKz2HHL6szH4jPYXlhz0");
-     var template = $("#eventTemplate").html();
-     us_template = _.template(template);
-     var createEvent = function(a) {
-         $("#events").append(us_template(a));
-      }
      var TestObject = Parse.Object.extend("TestObject");
      var testObject = new TestObject();
      testObject.save({foo: "Frank124"}).then(function(object) {
      });
 
+     //Create event template
+     var template = $("#eventTemplate").html();
+     us_template = _.template(template);
+
+     //Keeps track of queried object
+     var eventList = [];
+
+     var createEvent = function(a)
+     {
+         eventList.push(a);
+         $("#events").append(us_template(a));
+     }
+
+/*
+     //Returns an array with arr[0] = 
+     function getSort()
+     {
+
+     }
+*/
+
+     function sortEvents()
+     {
+         //Get sort order
+         var ss = document.getElementById("sortSelect");  //Sorting select obj
+         var sort_id = ss.options[ss.selectedIndex].value;   //Value of sorting selected
+
+         if(sort_id == "createdAt")
+         {
+             //Sort events by sort_id option
+             eventList.sort(function(a, b) {
+                  return (a[sort_id] < b[sort_id]) ? -1 : ((a[sort_id] > b[sort_id]) ? 1 : 0);
+              });
+         }
+         else
+         {
+              var ascending = true;
+
+             switch(sort_id)
+             {
+              case "COMP-HTL":
+                  sort_id = "compensation";
+                  ascending = false;
+              break;
+
+              case "COMP-LTH":
+                  sort_id = "compensation";
+                  ascending = true;
+              break;
+
+              case "DUR-STL":
+                  sort_id = "duration";
+                  ascending = true;
+              break;
+
+              case "DUR-LTS":
+                  sort_id = "duration";
+                  ascending = false;
+              break;
+              }
+
+             //Sort events by sort_id option
+             eventList.sort(function(a, b) {
+                  var av = ascending ? parseInt(a[sort_id], 10) : parseInt(b[sort_id], 10);
+                  var bv = ascending ? parseInt(b[sort_id], 10) : parseInt(a[sort_id], 10);
+                  return (av < bv) ? -1 : ((av > bv) ? 1 : 0);
+              });
+         }
+
+         //Repopulate events div
+         $("#events").empty();
+
+         for(var i = 0; i < eventList.length; i++)
+         {
+            $("#events").append(us_template(eventList[i]));
+         }
+      };
+
+
      var EventObject = Parse.Object.extend("event");
      var query = new Parse.Query(EventObject);
 
-     query.find({
-        success: function(results) {
+     function getData()
+     {
+      //alert("GETTING DATA");
 
-         for (var i = 0; i<results.length; i++)  //The length of data should be mutable
-         {
+       //Get sort order
+       var ss = document.getElementById("sortSelect");  //Sorting select obj
+       var sort_id = ss.options[ss.selectedIndex].value;   //Value of sorting selected
 
-           var object = results[i].attributes;
-           //test ID retrieval
-           object.testId = results[i].id;
+      //alert(sort_id);
 
-           //testForId = object.testId;
+        var ascending = true;
 
-           createEvent(object);
-         }
+       switch(sort_id)
+       {
+        case "createdAt":
+            ascending = false;
+            break;
 
-       document.getElementById("1").innerHTML = "success";
-     },
-       error: function(object, error) {
+        case "COMP-HTL":
+            sort_id = "compensation";
+            ascending = false;
+            break;
 
-        document.getElementById("1").innerHTML = "error";
+        case "COMP-LTH":
+            sort_id = "compensation";
+            ascending = true;
+            break;
+
+        case "DUR-STL":
+            sort_id = "duration";
+            ascending = true;
+            break;
+
+        case "DUR-LTS":
+            sort_id = "duration";
+            ascending = false;
+            break;
+        }
+
+        if(ascending)
+            query.ascending(sort_id);
+        else
+            query.descending(sort_id);
+
+      //alert(sort_id);
+
+       query.find({
+          success: function(results) {
+
+            //alert("Found " + results.length + " items.")
+
+           for(var i = 0; i < results.length; i++)  //The length of data should be mutable
+           {
+             var object = results[i].attributes;
+             //test ID retrieval
+             object.testId = results[i].id;
+
+             //testForId = object.testId;
+
+             createEvent(object);
+           }
+
+         document.getElementById("1").innerHTML = "success";
+          },
+         error: function(object, error) {
+
+          document.getElementById("1").innerHTML = "error";
+          }
+        });
      }
-    });
+
+     getData();
 
 
-    function addLikeNum(id) {
+    function addLikeNum(id)
+    {
       //alert("testForLike");
       var EventForVote = Parse.Object.extend("event");
       var query = new Parse.Query(EventForVote);
+
       query.get(id,{
         success: function(results) {
           results.increment('likeNum');
@@ -101,12 +264,15 @@
          alert("Error");
      }
     });
-    };
 
-    function addDislikeNum(id) {
+    }
+
+    function addDislikeNum(id)
+    {
       //alert("testForDislike");
       var EventForVote = Parse.Object.extend("event");
       var query = new Parse.Query(EventForVote);
+
       query.get(id,{
         success: function(results) {
           results.increment('dislikeNum');
@@ -119,29 +285,62 @@
          alert("Error");
      }
     });
-    };
+
+    }
+
+    function sendEmail(stu, loc, start, end)
+    {
+
+      var currentUser = Parse.User.current();
+      var currentUserName = currentUser.get("username")
+      var currentUserEmail = currentUser.get("email");
+      if(confirm("Are you sure you want to send the email?") && currentUser)
+      {
+      $.ajax(
+      {
+         type: "POST",
+         url: "https://mandrillapp.com/api/1.0/messages/send.json",
+          data: {
+            "key": "qgQsrDwIdACZ55h8AzrqIA",
+            "message": {
+                "from_email": currentUserEmail,
+                "from_name": currentUserName,
+                "to": [
+                    {
+                        "email": "lukeahn2013@u.northwestern.edu",
+                        "name": "Professor",
+                        "type": "to",
+                    }
+                      ],
+                      "autotext": 'true',
+                      "subject": "Research - " + stu,
+                      "html": "Hello, I am interested in the research study, " + stu + ", located at " + loc + ", which starts from " +
+                      start + " and ends on " + end + ". Please contact me."
+                  }
+            }
+      }).done(function(response) {
+       console.log(response); // if you're into that sorta thing
+     });
+      alert("SENT");
+    }
+    else
+    {
+      alert("please log in to send email")
+    }
+    }
 
 
+    function myFuction() {
+       alert("hey"); 
+    } 
 
    </script>
 
 
-   <script>
-   function sendEmail()
-   {
-     var EMAIL_ADDRESS = "";
-     window.open("mailto:" + EMAIL_ADDRESS);
-   };
 
-
+ <script >
+   src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"
    </script>
-
-
-
-
-
-
-
 
 <style>
     .container
@@ -159,4 +358,7 @@
         display: inline !important;
     }
 </style>
+
+
+
 </html>

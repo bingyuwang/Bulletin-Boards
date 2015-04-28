@@ -13,11 +13,6 @@ initialView:
       location: "Home#index" # Supersonic module#view type navigation
     }
     {
-      title: "Search"
-      id: "search"
-      location: "example#search"
-    }
-    {
       title: "Settings"
       id: "settings"
       location: "Home#settings" # URLs are supported!

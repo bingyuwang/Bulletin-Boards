@@ -22,12 +22,6 @@
     },
     {
       "position": 1,
-      "id": "search",
-      "title": "Search",
-      "target_url": "http://localhost/app/example/search.html"
-    },
-    {
-      "position": 2,
       "id": "settings",
       "title": "Settings",
       "target_url": "http://localhost/app/Home/settings.html"
